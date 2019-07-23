@@ -1,54 +1,66 @@
 require("dotenv").config();
 
-var keys = require("./keys.js");
+var fs = require("fs");
+
 
 var concert = require("./concerts");
 
 var movie = require("./movies");
 
-// var Spotify = require("./songsearch");
+var songSearch = require("./songsearch");
 
-// Create a new TV object
+// Create a new concert object
 var newConcert = new concert();
-
+// Create a new movie object
 var newMovie = new movie();
-// var spotify = new Spotify(keys.spotify);
-
 
 // Grab search command line argument
 var search = process.argv[2];
 // Joining the remaining arguments 
 var term = process.argv.slice(3).join(" ");
 
-if (search === "concert-this"){
-    newConcert.findConcert(term);
-    
-}
+function liriSearch() {
 
-else if (search === "movie-this"){
-    console.log("search for movie");
-    newMovie.findMovie(term);
-    
-}
-else if (search === "spotify-this-song"){
-    console.log("search for song");
-    // spotify.search("track", term);
+    if (search === "concert-this") {
+        newConcert.findConcert(term);
 
-}
-else if (search === "do-what-it-says"){
-    console.log("do what it says");
-}
-else {
-    console.log("type command");
-}
+    }
+
+    else if (search === "movie-this") {
+        console.log("search for movie");
+        newMovie.findMovie(term);
+
+    }
+    else if (search === "spotify-this-song") {
+        console.log("search for song");
+        songSearch(term);
+
+    }
+    else if (search === "do-what-it-says") {
+        fs.readFile("random.txt", "utf8", function (error, data) {
+
+            var dataSplit = data.split(",");
+            search = dataSplit[0];
+            term = dataSplit[1];
+            liriSearch(term);
+            console.log(search, term);
+        });
 
 
- 
+    }
+
+
+    else {
+        console.log("type a command");
+    }
+
+
+};
+liriSearch();
 
 
 
 
 
-    
 
 

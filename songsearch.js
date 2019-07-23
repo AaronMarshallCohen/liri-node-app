@@ -1,23 +1,26 @@
-var keys = require("./keys.js");
+function songSearch(term) {
+    var keys = require("./keys.js");
 
-var fs = require("fs");
+    var fs = require("fs");
 
-var term;
+    var Spotify = require('node-spotify-api');
 
-var Spotify = require('node-spotify-api');
+    var spotify = new Spotify(keys.spotify);
 
-var spotify = new Spotify({
-    id: process.env.SPOTIFY_ID,
-    secret: process.env.SPOTIFY_SECRET
-});
+    spotify.search({ type: 'track', query: term }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
 
-spotify.search({ type: 'track', query: term }, function (err, data) {
-    if (err) {
-        return console.log('Error occurred: ' + err);
-    }
-
-    console.log(data);
-});
+        console.log("Artist: " + data.tracks.items[0].artists[0].name);
+        console.log("Song: " + data.tracks.items[0].name);
+        console.log("Preview: " + data.tracks.items[0].preview_url);
+        console.log("Album: " + data.tracks.items[0].album.name);
+       
 
 
-module.exports = Spotify;
+    });
+
+}
+
+module.exports = songSearch;
